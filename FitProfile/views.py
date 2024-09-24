@@ -6,6 +6,17 @@ from .models import Login
 def login(request):
     return render(request, 'login.html')
 
+def profile(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        request.POST.get('password')
+    
+    user = Login.objects.filter(username=username).first()  # Get the first user with the username
+    print(user)  # This should print a single user object or None, not a QuerySet
+   
+
+    return render(request, 'user.html')
+
 def user(request):
     if request.method == 'GET':
         current_weight = request.GET.get('currentWeight')
@@ -102,7 +113,7 @@ def user(request):
         progressions_plan = chat.send_message(progressions)
         # print(response.text)
 
-        instance = Login.objects.create(name=name, age=age, email=email, current_weight=current_weight, target_weight=target_weight, current_height=current_height, gender=gender, body_type=body_type, body_fat=body_fat, self_assessment=self_assessment, diet=diet, motivation=motivation, exercise_frequency=exercise_frequency, type_of_workout=type_of_workout, stress_level=stress_level, sleep=sleep, tracking_method=tracking_method, nutritional_plan=nutritional_plan, workout_plan=workout_plan, progression_plan=progressions_plan)
+        instance = Login.objects.create(username=username, password=password, name=name, age=age, email=email, current_weight=current_weight, target_weight=target_weight, current_height=current_height, gender=gender, body_type=body_type, body_fat=body_fat, self_assessment=self_assessment, diet=diet, motivation=motivation, exercise_frequency=exercise_frequency, type_of_workout=type_of_workout, stress_level=stress_level, sleep=sleep, tracking_method=tracking_method, nutritional_plan=nutritional_plan.text, workout_plan=workout_plan.text, progression_plan=progressions_plan.text)
         instance.save()
 
     return render(request, 'usermade.html')
