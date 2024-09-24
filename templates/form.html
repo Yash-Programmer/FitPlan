@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Questionnaire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            height: auto; 
+            min-height: 100vh; 
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        h1 {
+            font-size: 1.7em;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .custom-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .custom-button.selected {
+            background-color: #3b82f6;
+            color: white;
+            border: 2px solid #2563eb;
+        }
+
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            background-color: #3b82f6;
+            color: #fff;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:disabled {
+            background-color: #a0a0a0;
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: #2563eb;
+        }
+
+        /* Hidden form for name, email, etc. */
+        #userDetailsForm {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 1em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- First Form: Questionnaire -->
+        <form id="questionForm" onsubmit="return false;">
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+
+            <div id="questionContainer">
+                <h1 id="question"></h1>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="btn" id="previous" onclick="prevQuestion()" disabled>Previous</button>
+                <button type="button" class="btn" id="next" onclick="nextQuestion()">Next</button>
+                <button type="button" class="btn" id="submit" style="display: none;" onclick="showUserDetailsForm()">Submit</button>
+            </div>
+        </form>
+
+        <!-- Second Form: User Details (Hidden initially) -->
+        <form id="userDetailsForm" onsubmit="return validatePasswords();">
+            <div class="form-group">
+                <label for="currentWeight">Current Weight (kg):</label>
+                <input type="number" id="currentWeight" name="currentWeight" required>
+            </div>
+
+            <div class="form-group">
+                <label for="targetWeight">Target Weight (kg):</label>
+                <input type="number" id="targetWeight" name="targetWeight" required>
+            </div>
+
+            <div class="form-group">
+                <label for="currentHeight">Current Height (cm):</label>
+                <input type="number" id="currentHeight" name="currentHeight" required>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+
+            <p class="error" id="passwordError">Passwords do not match.</p>
+
+            <div class="buttons">
+                <button type="submit" class="btn">Submit Details</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "What is your main focus right now?", options: ["I'm only focused on losing weight", "Building muscle is more important than losing fat", "I'd like to build some muscle while I lose fat"], name: 'focus' },
+            { question: "What gender do you identify with?", options: ['Male', 'Female'], name: 'gender' },
+            { question: "What is your age?", options: ['Teens', 'Twenties', 'Thirties', 'Forties', 'Over Fifty'], name: 'age' },
+            { question: "How would you describe your body type?", options: ['Skinny', 'Bulky', 'Overweight'], name: 'bodyType' },
+            { question: "What would you estimate your current body fat % to be?", options: ['35% and above', 'Around 30%', 'Around 25%', 'Around 20%', 'Around 15%', 'Around 12%', 'Around 10%'], name: 'bodyFat' },
+            { question: "Which best describes you?", options: ['My diet and training need a lot of work', 'I have some healthy habits but struggle with consistency', 'I mostly eat healthy and train regularly, but the progress is slow'], name: 'selfAssessment' },
+            { question: "Which best describes your diet?", options: ['Vegetarian', 'Non-veg', 'Vegan', 'Jain Food'], name: 'diet' },
+            { question: "What is your primary motivation for getting fit?", options: ['Improve overall health', 'Boost energy levels', 'Enhance athletic performance', 'Prepare for an event or competition', 'Improve body image'], name: 'motivation' },
+            { question: "How often do you currently exercise?", options: ['Rarely (less than once a week)', 'Occasionally (1-2 times a week)', 'Regularly (3-4 times a week)', 'Frequently (5 or more times a week)'], name: 'exerciseFrequency' },
+            { question: "What type of workouts do you enjoy the most?", type: 'button', options: ['Cardio (running, cycling, etc.)', 'Strength training (weightlifting, resistance bands)', 'Flexibility (yoga, Pilates)', 'Group classes (Zumba, kickboxing)', 'Outdoor activities (hiking, sports)'], name: 'workoutType' },
+            { question: "How would you rate your stress levels?", type: 'button', options: ['Very high', 'High', 'Moderate', 'Low', 'Very low'], name: 'stressLevel' },
+            { question: "How many hours of sleep do you get on average per night?", type: 'button', options: ['Less than 5', '5-6', '6-7', '7-8', 'More than 8'], name: 'sleep' },
+            { question: "How do you usually track your progress?", type: 'button', options: ['Scale measurements', 'Body measurements (waist, hips, etc.)', 'Photos', 'Fitness performance (like lifting weights or running times)', 'I don’t track my progress'], name: 'trackingMethod' },
+            { question: "What do you struggle with the most in your fitness journey?", type: 'button', options: ['Sticking to a routine', 'Maintaining a healthy diet', 'Finding time to exercise', 'Staying motivated', 'Overcoming plateaus'], name: 'struggles' },
+            { question: "Do you have any specific fitness goals?", type: 'button', options: ['Running a certain distance', 'Lifting a specific weight', 'Achieving a body composition goal', 'Improving flexibility or mobility'], name: 'fitnessGoals' },
+            { question: "Where do you workout?", type: 'button', options: ['Home Gym', 'Home Workout', 'Commercial Gym', 'Bodyweight workout'], name: 'workoutLocation' }
+        ];
+
+        let currentQuestion = 0;
+        const totalQuestions = questions.length;
+
+        // Initialize question display
+        updateQuestion();
+        updateProgress();
+
+        function updateQuestion() {
+            document.getElementById("question").innerText = questions[currentQuestion].question;
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = '';
+
+            questions[currentQuestion].options.forEach((option, index) => {
+                const button = document.createElement("div");
+                button.className = "custom-button";
+                button.innerText = option;
+                button.onclick = () => selectOption(index);
+                optionsContainer.appendChild(button);
+            });
+
+            document.getElementById("previous").disabled = currentQuestion === 0;
+            document.getElementById("next").style.display = currentQuestion === totalQuestions - 1 ? "none" : "inline-block";
+            document.getElementById("submit").style.display = currentQuestion === totalQuestions - 1 ? "inline-block" : "none";
+        }
+
+        function selectOption(index) {
+            const selectedButton = document.getElementsByClassName("custom-button")[index];
+            const previouslySelected = Array.from(document.getElementsByClassName("custom-button")).find(button => button.classList.contains("selected"));
+            if (previouslySelected) previouslySelected.classList.remove("selected");
+            selectedButton.classList.add("selected");
+
+            questions[currentQuestion].selectedOption = questions[currentQuestion].options[index];
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById("progressBar").style.width = progressPercentage + "%";
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < totalQuestions) {
+                updateQuestion();
+            } else {
+                document.getElementById("questionForm").style.display = "none";
+                showUserDetailsForm();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                updateQuestion();
+            }
+        }
+
+        function showUserDetailsForm() {
+            document.getElementById("userDetailsForm").style.display = "block";
+        }
+
+        function validatePasswords() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorDisplay = document.getElementById("passwordError");
+
+            if (password !== confirmPassword) {
+                errorDisplay.style.display = "block";
+                return false;
+            } else {
+                errorDisplay.style.display = "none";
+                redirectToPlan();
+                return false; // Prevent form submission
+            }
+        }
+
+        function redirectToPlan() {
+            const params = new URLSearchParams();
+
+            // Collecting user details
+            const userDetails = {
+                currentWeight: document.getElementById("currentWeight").value,
+                targetWeight: document.getElementById("targetWeight").value,
+                currentHeight: document.getElementById("currentHeight").value,
+                name: document.getElementById("name").value,
+                age: document.getElementById("age").value,
+                email: document.getElementById("email").value,
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value,
+                focus: questions[0].selectedOption,
+                gender: questions[1].selectedOption,
+                bodyType: questions[3].selectedOption,
+                bodyFat: questions[4].selectedOption,
+                selfAssessment: questions[5].selectedOption,
+                diet: questions[6].selectedOption,
+                motivation: questions[7].selectedOption,
+                exerciseFrequency: questions[8].selectedOption,
+                typeOfWorkout: questions[9].selectedOption,
+                stressLevel: questions[10].selectedOption,
+                sleep: questions[11].selectedOption,
+                trackingMethod: questions[12].selectedOption,
+                struggles: questions[13].selectedOption,
+                fitnessGoals: questions[14].selectedOption,
+                workoutLocation: questions[15].selectedOption
+            };
+
+            // Append all parameters to the URL
+            for (const key in userDetails) {
+                params.append(key, userDetails[key]);
+            }
+
+            // Redirecting to the plan page with parameters
+            window.location.href = '/user?' + params.toString();
+        }
+    </script>
+</body>
+</html>
