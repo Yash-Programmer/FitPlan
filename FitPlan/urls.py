@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from FitProfile.views import user, login, profile
+from FitProfile.views import user, login, profile, update,otp
 from FitQuest.views import *
 from FitTrend.views import *
 from Home.views import *
@@ -28,4 +28,6 @@ urlpatterns = [
     path("FitQuest", form, name="form"),
     path("login", login, name="login"),
     path("profile", profile, name="profile"),
+    path("update", update, name="update"),
+    path("otp", otp, name="otp"),
 ]

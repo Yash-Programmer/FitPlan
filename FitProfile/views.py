@@ -1,6 +1,8 @@
 from django.shortcuts import render
 import google.generativeai as ai
 from .models import Login
+import re
+import smtplib
 
 # Create your views here.
 def login(request):
@@ -10,12 +12,36 @@ def profile(request):
     if request.method == "POST":
         username = request.POST.get('username')
         request.POST.get('password')
+
+    def format_nutritional_plan(text):
+        # Replace headings with <strong> tags
+        formatted_text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+        
+        # Replace new lines with <br>
+        formatted_text = formatted_text.replace('\n\n', '<br><br>')
+        formatted_text = formatted_text.replace('\n', '<br>')
+
+        # Replace bullet points with <ul> and <li>
+        formatted_text = re.sub(r'\*\s*(.*?)<br>', r'<li>\1</li>', formatted_text)
+        formatted_text = re.sub(r'(<li>.*?</li>)', r'<ul>\1</ul>', formatted_text)
+        
+        # Clean up the nested <ul> tags
+        formatted_text = re.sub(r'<ul>(<li>.*?</li>)<ul>', r'<ul>\1', formatted_text)
+        formatted_text = re.sub(r'</ul><ul>', r'</ul><ul>', formatted_text)
+        
+        # Ensure each <ul> is properly closed
+        formatted_text = re.sub(r'(<ul>.*?</ul>)(<ul>)', r'\1', formatted_text)
+        
+        return formatted_text
     
     user = Login.objects.filter(username=username).first()  # Get the first user with the username
     print(user)  # This should print a single user object or None, not a QuerySet
    
 
-    return render(request, 'user.html')
+    return render(request, 'user.html', {'user': user,
+                                         'p': format_nutritional_plan(user.progression_plan),
+                                         'n': format_nutritional_plan(user.nutritional_plan),
+                                         'w': format_nutritional_plan(user.workout_plan)})
 
 def user(request):
     if request.method == 'GET':
@@ -101,10 +127,32 @@ def user(request):
             f"Tracking Method: {tracking_method}"
         )
 
+        introduction = (
+            f"create a introduction for this person. {name}:\n"
+            f"Age: {age}\n"
+            f"Email: {email}\n"
+            f"Current Weight: {current_weight} kg\n"
+            f"Target Weight: {target_weight} kg\n"
+            f"Current Height: {current_height} cm\n"
+            f"Gender: {gender}\n"
+            f"Body Type: {body_type}\n"
+            f"Body Fat: {body_fat}%\n"
+            f"Self-Assessment: {self_assessment}\n"
+            f"Diet Preference: {diet}\n"
+            f"Motivation: {motivation}\n"
+            f"Exercise Frequency: {exercise_frequency} times/week\n"
+            f"Type of Workout: {type_of_workout}\n"
+            f"Stress Level: {stress_level}\n"
+            f"Sleep Duration: {sleep} hours/night\n"
+            f"Tracking Method: {tracking_method}"
+        )
+
         API_KEY = "AIzaSyC71aIp7u9YeRa67G1ORzgPYXtJXDnRwqY"
         ai.configure(api_key=API_KEY)
         model = ai.GenerativeModel("gemini-pro")
         chat = model.start_chat()
+
+        current_description = chat.send_message(introduction)
 
         workout_plan = chat.send_message(workout)
         # print(response.text)
@@ -113,7 +161,44 @@ def user(request):
         progressions_plan = chat.send_message(progressions)
         # print(response.text)
 
-        instance = Login.objects.create(username=username, password=password, name=name, age=age, email=email, current_weight=current_weight, target_weight=target_weight, current_height=current_height, gender=gender, body_type=body_type, body_fat=body_fat, self_assessment=self_assessment, diet=diet, motivation=motivation, exercise_frequency=exercise_frequency, type_of_workout=type_of_workout, stress_level=stress_level, sleep=sleep, tracking_method=tracking_method, nutritional_plan=nutritional_plan.text, workout_plan=workout_plan.text, progression_plan=progressions_plan.text)
+        instance = Login.objects.create(introduction=current_description.text, username=username, password=password, name=name, age=age, email=email, current_weight=current_weight, target_weight=target_weight, current_height=current_height, gender=gender, body_type=body_type, body_fat=body_fat, self_assessment=self_assessment, diet=diet, motivation=motivation, exercise_frequency=exercise_frequency, type_of_workout=type_of_workout, stress_level=stress_level, sleep=sleep, tracking_method=tracking_method, nutritional_plan=nutritional_plan.text, workout_plan=workout_plan.text, progression_plan=progressions_plan.text)
         instance.save()
 
     return render(request, 'usermade.html')
+
+def update(request):
+    return render(request, 'update.html')
+
+def otp(request):
+    global valid_otp, username_valid
+    if request.method == 'POST':
+        username_valid = request.POST.get('username')
+        password = request.POST.get('password')
+    
+    user = Login.objects.filter(username=username_valid).first() 
+    
+    from django.core.mail import send_mail
+
+    valid_otp = "1234"
+
+    send_mail(
+        "OTP",
+        "Your OTP is 1234",
+        "settings.EMAIL_HOST_USER",
+        [user.email],
+        fail_silently=False
+    )
+
+    return render(request, 'otp.html')
+
+def confirm(request):
+    if request.method == "POST":
+        otp = request.POST.get('otp')
+        print(valid_otp)
+        if otp == valid_otp:
+            user = Login.objects.filter(username=username_valid).first()
+            user.delete()
+            return render(request, 'form.html')
+        else:
+            print("otp")
+            return render(request, 'confirm.html')

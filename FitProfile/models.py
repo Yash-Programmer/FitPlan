@@ -26,5 +26,7 @@ class Login(models.Model):
     workout_plan = models.TextField()
     progression_plan = models.TextField()
 
+    introduction = models.TextField()
+
     def __str__(self):
         return self.username
