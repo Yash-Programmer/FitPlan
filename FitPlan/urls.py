@@ -16,9 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from FitProfile.views import user, login, profile, update,otp
-from FitQuest.views import *
-from FitTrend.views import *
+from FitProfile.views import user, login, profile, update,otp, confirm
+from FitQuest.views import calorie, calorie_result, form
+from FitTrend.views import padlet, submit,chatbot
 from Home.views import *
 
 urlpatterns = [
@@ -30,4 +30,10 @@ urlpatterns = [
     path("profile", profile, name="profile"),
     path("update", update, name="update"),
     path("otp", otp, name="otp"),
+    path("confirm", confirm, name="confirm"),
+    path("padlet", padlet, name="padlet"),
+    path("submitted", submit, name="submit"),
+    path("chatbot", chatbot, name="chatbot"),
+    path("calorie", calorie, name="calorie"),
+    path("calorie_result", calorie_result, name="calorie_result"),
 ]

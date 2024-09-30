@@ -4,73 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Incorrect</title>
-    <link rel="icon" type="image/x-icon" href="{% static '/images/pepperlogo-search-grid-1x-removebg-preview.png' %}">
+    <title>Calorie Calculator</title>
+    <link rel="icon" type="image/x-icon" href="{% static '/images/pepperlogo-search-grid-1x-removebg-preview.png'  %}">
     <style>
-        * {
-            box-sizing: border-box;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f0f4f8;
-            font-family: 'Arial', sans-serif;
+            height: 100vh;
         }
-
         .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
             text-align: center;
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            transition: transform 0.3s; /* Animation for card hover effect */
         }
-
-        .container:hover {
-            transform: translateY(-5px); /* Lift effect on hover */
-        }
-
         h1 {
-            color: #d9534f; /* Red color for error messages */
-            margin-bottom: 20px;
+            color: #333;
+        }
+        .result {
+            margin: 20px 0;
+        }
+        .result p {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .result .calories {
             font-size: 24px;
-        }
-
-        p {
-            color: #555; /* Slightly darker text for instructions */
-            margin-top: 10px;
-            font-size: 16px;
-        }
-
-        a {
-            color: #f1c40f; /* Yellow link color */
-            text-decoration: none;
             font-weight: bold;
-            transition: color 0.3s; /* Animation for link hover effect */
         }
-
-        a:hover {
-            color: #e0b80f; /* Darker yellow on hover */
+        .result .percentage {
+            font-size: 14px;
+            color: #777;
         }
-
-        @media (max-width: 400px) {
-            .container {
-                width: 90%; /* Responsive card width */
-            }
+        .caution {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #d9534f;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>OTP entered is INCORRECT</h1>
-        <p>Please re-enter your information</p>
-        <p><a href="/update">Go back to Update</a></p>
+        <h1>Calorie Calculator</h1>
+      <div class="result">
+            <p>BMI</p>
+            <p class="calories">{{bmi}}</p>
+        </div>
+        <div class="result">
+            <p>Maintain weight</p>
+            <p class="calories">{{maintenance_calories}}</p>
+            <p class="percentage">100%</p>
+        </div>
+        <div class="result">
+            <p>Mild weight loss</p>
+            <p class="calories">{{mild_loss_calories}}</p>
+            <p class="percentage">90%</p>
+        </div>
+        <div class="result">
+            <p>Weight loss</p>
+            <p class="calories">{{moderate_loss_calories}}</p>
+            <p class="percentage">79%</p>
+        </div>
+        <div class="result">
+            <p>Extreme weight loss</p>
+            <p class="calories">{{extreme_loss_calories}}</p>
+            <p class="percentage">59%</p>
+        </div>
+      
+        <p class="caution">Please consult with a doctor when losing 1 kg or more per week since it requires that you consume less than the minimum recommendation of 1,500 calories a day.</p>
     </div>
     <style>
         body {
@@ -113,7 +121,6 @@
             <path fill="white" d="M320 0c17.7 0 32 14.3 32 32l0 64 120 0c39.8 0 72 32.2 72 72l0 272c0 39.8-32.2 72-72 72l-304 0c-39.8 0-72-32.2-72-72l0-272c0-39.8 32.2-72 72-72l120 0 0-64c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0z"/>
         </svg>
     </a>
-
 
 </body>
 </html>

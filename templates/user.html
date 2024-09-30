@@ -6,13 +6,12 @@
     <meta name="keywords" content="Hi, my name isCelia Almeda, ​I like to create fun learning experiences for designers, ​Why choose me as your designer?, My Values, My Mission, ​What Services I&amp;apos;m Providing, My Works, ​Message Me">
     <meta name="description" content="">
     <title>Home</title>
-    <link rel="stylesheet" href="{% static 'nicepage1.css'  %}" media="screen">
+    <link rel="stylesheet" href="{% static 'extra1.css'  %}" media="screen">
 <link rel="stylesheet" href="{% static 'index1.css'  %}" media="screen">
     <script class="u-script" type="text/javascript" src="{% static 'jquery.js'  %}" defer=""></script>
-    <script class="u-script" type="text/javascript" src="{% static 'nicepage.js'  %}" defer=""></script>
-    <meta name="generator" content="Nicepage 6.18.3, nicepage.com">
+    <script class="u-script" type="text/javascript" src="{% static 'script.js'  %}" defer=""></script>
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
-    
+    <link rel="icon" type="image/x-icon" href="{% static '/images/pepperlogo-search-grid-1x-removebg-preview.png'  %}">
     
     
     
@@ -53,9 +52,9 @@
         <img class="u-image u-image-round u-radius-14 u-image-1" src="{% static '/images/Untitled-1.jpg'  %}" data-image-width="900" data-image-height="900" data-animation-name="customAnimationIn" data-animation-duration="1500" data-animation-delay="500">
         <div class="u-align-left u-container-align-left u-container-style u-grey-5 u-group u-radius-15 u-shape-round u-group-1" data-animation-name="flipIn" data-animation-duration="2000" data-animation-direction="X" data-animation-delay="750">
           <div class="u-container-layout u-container-layout-1">
-            <h4 class="u-text u-text-1">About</h4>
-            <h2 class="u-text u-text-2">Me</h2>
-            <p class="u-text u-text-3">{{user.description}}</p>
+            <h4 class="u-text u-text-1">{{date}}</h4>
+            <h2 class="u-text u-text-2">About</h2>
+            <p class="u-text u-text-3">{{i}}</p>
           </div>
         </div>
       </div>
@@ -119,4 +118,47 @@
         </div>
       </div>
     </section>
+    <style>
+      body {
+          margin: 0;
+          padding: 0;
+      }
+
+      .floating-button {
+          position: fixed;
+          bottom: 50px;
+          right: 20px;
+          background-color: #FFD700; /* Golden color */
+          color: white;
+          padding: 15px;
+          border-radius: 50%; /* Circle shape */
+          text-align: center;
+          text-decoration: none;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+          transition: background-color 0.3s;
+          width: 80px; /* Set width for the button */
+          height: 80px; /* Set height for the button */
+          display: flex; /* Flexbox for centering */
+          justify-content: center; /* Center horizontally */
+          align-items: center; /* Center vertically */
+      }
+
+      .floating-button:hover {
+          background-color: #FFC300; /* Slightly darker gold on hover */
+      }
+
+      .floating-button svg {
+          width: 50px; /* Increased width of the SVG icon */
+          height: 50px; /* Increased height of the SVG icon */
+      }
+  </style>
+
+
+  <a href="/chatbot" class="floating-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+          <path fill="white" d="M320 0c17.7 0 32 14.3 32 32l0 64 120 0c39.8 0 72 32.2 72 72l0 272c0 39.8-32.2 72-72 72l-304 0c-39.8 0-72-32.2-72-72l0-272c0-39.8 32.2-72 72-72l120 0 0-64c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0z"/>
+      </svg>
+  </a>
+
+
 </body></html>

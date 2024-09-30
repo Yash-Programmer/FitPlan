@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>Chatbot</title>
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link rel="icon" type="image/x-icon" href="{% static '/images/pepperlogo-search-grid-1x-removebg-preview.png'  %}">
+    <meta name="theme-color" content="#478ac9">
+    <meta property="og:title" content="Chatbot-2">
+    <meta property="og:type" content="website">
+  <meta data-intl-tel-input-cdn-path="intlTelInput/">
+    <style>
+        body{
+            background-color: #FAB162;
+        }
+        .btn {
+  background: #FAB162;
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #000;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  text-decoration: none;
+  color: #000;
+}
+.u-section-1 {
+    background-image: none;
+  }
+  
+  .u-section-1 .u-sheet-1 {
+    min-height: 260px;
+  }
+  
+  .u-section-1 .u-text-1 {
+    text-transform: uppercase;
+    margin: 44px auto 0;
+  }
+  
+  .u-section-1 .u-text-2 {
+    margin: 20px auto 0;
+  }
+  
+  .u-section-1 .u-text-3 {
+    line-height: 1.8;
+    width: 680px;
+    margin: 20px auto 44px;
+  }
+  
+  @media (max-width: 767px) {
+    .u-section-1 .u-text-3 {
+      width: 540px;
+    }
+  }
+  
+  @media (max-width: 575px) {
+    .u-section-1 .u-text-3 {
+      width: 340px;
+    }
+  }.u-section-2 .u-sheet-1 {
+    min-height: 473px;
+  }
+  
+  .u-section-2 .u-form-1 {
+    height: 232px;
+    background-image: none;
+    box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
+    width: 570px;
+    margin: 23px auto 0;
+  }
+  
+  .u-section-2 .u-btn-1 {
+    background-image: none;
+    font-weight: 700;
+  }
+  
+  .u-section-2 .u-text-1 {
+    font-size: 1.25rem;
+    width: 462px;
+    margin: 30px auto 60px;
+  }
+  
+  @media (max-width: 767px) {
+    .u-section-2 .u-form-1 {
+      width: 540px;
+    }
+  }
+  
+  @media (max-width: 575px) {
+    .u-section-2 .u-form-1 {
+      width: 340px;
+    }
+  
+    .u-section-2 .u-text-1 {
+      width: 340px;
+    }
+  }
+    </style>
+    </head>
+  <body class="u-body u-xl-mode" data-lang="en"><header class="u-align-left u-clearfix u-header u-section-row-container" id="sec-cf7a"><div class="u-section-rows">
+        
+          <div style="background-color: #FAB162;">
+          <div style="margin: 40px; background-color: #323232; -webkit-box-shadow: 0px 5px 8px #666666; -moz-box-shadow: 0px 1px 3px #666666; box-shadow: 0px 1px 3px #666666; padding: 20px;">
+        <center>
+            <p style="font-size: 300%; background-color: #262626; color: white;">ChatBot</p>
+        </center>
+        <form method="POST" action="/chatbot">{% csrf_token %}
+            <pre style="font-family: Arial !important ; font-size: 110%;" class="response">
+                <img src="https://cdn-icons-png.flaticon.com/512/992/992490.png?w=826&t=st=1691486887~exp=1691487487~hmac=c7861fa53270008055d5c28d6d461f90b010116a9a653d6da7a17a2b64561150" width="70"><textarea name="question" style="margin: 0px; height: 90px; width: 40%;" type="text">{{question}}</textarea>
+            </pre>
+        
+        <pre style="text-align: right; font-family: Arial; font-size: 110%;" class="response"><textarea id="Output" readonly style="margin: 0px; height: 169px; width: 40%;">{{answer}}</textarea><img src="{% static '/images/pepperlogo-search-grid-1x-removebg-preview.png'  %}" width="70"></pre><br>
+        <center><button type="submit" class="btn">Submit</button></center><br>
+    </div><br>
+    
+          
+        </form>
+          <br><br><br>
+        </div></div>
+      </div></header> 
+      <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            background-color: #FFD700; /* Golden color */
+            color: white;
+            padding: 15px;
+            border-radius: 50%; /* Circle shape */
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            width: 80px; /* Set width for the button */
+            height: 80px; /* Set height for the button */
+            display: flex; /* Flexbox for centering */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+
+        .floating-button:hover {
+            background-color: #FFC300; /* Slightly darker gold on hover */
+        }
+
+        .floating-button svg {
+            width: 50px; /* Increased width of the SVG icon */
+            height: 50px; /* Increased height of the SVG icon */
+        }
+    </style>
+
+
+    <a href="/chatbot" class="floating-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+            <path fill="white" d="M320 0c17.7 0 32 14.3 32 32l0 64 120 0c39.8 0 72 32.2 72 72l0 272c0 39.8-32.2 72-72 72l-304 0c-39.8 0-72-32.2-72-72l0-272c0-39.8 32.2-72 72-72l120 0 0-64c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0z"/>
+        </svg>
+    </a>
+
+
+      
+</body></html>

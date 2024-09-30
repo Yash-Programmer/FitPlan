@@ -2,7 +2,8 @@ from django.shortcuts import render
 import google.generativeai as ai
 from .models import Login
 import re
-import smtplib
+from django.core.mail import send_mail
+import random
 
 # Create your views here.
 def login(request):
@@ -14,22 +15,17 @@ def profile(request):
         request.POST.get('password')
 
     def format_nutritional_plan(text):
-        # Replace headings with <strong> tags
         formatted_text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
         
-        # Replace new lines with <br>
         formatted_text = formatted_text.replace('\n\n', '<br><br>')
         formatted_text = formatted_text.replace('\n', '<br>')
 
-        # Replace bullet points with <ul> and <li>
         formatted_text = re.sub(r'\*\s*(.*?)<br>', r'<li>\1</li>', formatted_text)
         formatted_text = re.sub(r'(<li>.*?</li>)', r'<ul>\1</ul>', formatted_text)
         
-        # Clean up the nested <ul> tags
         formatted_text = re.sub(r'<ul>(<li>.*?</li>)<ul>', r'<ul>\1', formatted_text)
         formatted_text = re.sub(r'</ul><ul>', r'</ul><ul>', formatted_text)
         
-        # Ensure each <ul> is properly closed
         formatted_text = re.sub(r'(<ul>.*?</ul>)(<ul>)', r'\1', formatted_text)
         
         return formatted_text
@@ -41,7 +37,9 @@ def profile(request):
     return render(request, 'user.html', {'user': user,
                                          'p': format_nutritional_plan(user.progression_plan),
                                          'n': format_nutritional_plan(user.nutritional_plan),
-                                         'w': format_nutritional_plan(user.workout_plan)})
+                                         'w': format_nutritional_plan(user.workout_plan),
+                                         "i": format_nutritional_plan(user.introduction),
+                                         "date": user.date})
 
 def user(request):
     if request.method == 'GET':
@@ -161,7 +159,7 @@ def user(request):
         progressions_plan = chat.send_message(progressions)
         # print(response.text)
 
-        instance = Login.objects.create(introduction=current_description.text, username=username, password=password, name=name, age=age, email=email, current_weight=current_weight, target_weight=target_weight, current_height=current_height, gender=gender, body_type=body_type, body_fat=body_fat, self_assessment=self_assessment, diet=diet, motivation=motivation, exercise_frequency=exercise_frequency, type_of_workout=type_of_workout, stress_level=stress_level, sleep=sleep, tracking_method=tracking_method, nutritional_plan=nutritional_plan.text, workout_plan=workout_plan.text, progression_plan=progressions_plan.text)
+        instance = Login.objects.create(introduction=current_description.text, username=username, password=password, name=name, age=age, email=email, current_weight=current_weight, target_weight=target_weight, current_height=current_height, gender=gender, body_type=body_type, body_fat=body_fat, self_assessment=self_assessment, diet=diet, motivation=motivation, exercise_frequency=exercise_frequency, type_of_workout=type_of_workout, stress_level=stress_level, sleep=sleep, tracking_method=tracking_method, nutritional_plan=nutritional_plan.text, workout_plan=workout_plan.text, progression_plan=progressions_plan.text, otp="None")
         instance.save()
 
     return render(request, 'usermade.html')
@@ -170,35 +168,39 @@ def update(request):
     return render(request, 'update.html')
 
 def otp(request):
-    global valid_otp, username_valid
+    
     if request.method == 'POST':
         username_valid = request.POST.get('username')
         password = request.POST.get('password')
     
-    user = Login.objects.filter(username=username_valid).first() 
-    
-    from django.core.mail import send_mail
-
-    valid_otp = "1234"
+    user = Login.objects.filter(username=username_valid).first()   
+    otp = random.randint(1000, 9999)    
 
     send_mail(
         "OTP",
-        "Your OTP is 1234",
+        f"Your OTP is {otp}",
         "settings.EMAIL_HOST_USER",
         [user.email],
         fail_silently=False
     )
 
-    return render(request, 'otp.html')
+    user.otp = otp
+    user.save()
+
+    return render(request, 'otp.html', {'username': user.username})
 
 def confirm(request):
-    if request.method == "POST":
-        otp = request.POST.get('otp')
-        print(valid_otp)
-        if otp == valid_otp:
-            user = Login.objects.filter(username=username_valid).first()
-            user.delete()
-            return render(request, 'form.html')
-        else:
-            print("otp")
-            return render(request, 'confirm.html')
+    otp = request.POST.get('otp')
+    username_valid = request.POST.get('username')
+    user = Login.objects.filter(username=username_valid).first()
+
+    print(user.otp)
+    print(otp)
+
+    if otp == user.otp:            
+        user.delete()
+        print("deleted")
+        return render(request, 'form.html')
+    else:
+        print("otp")
+        return render(request, 'confirm.html')

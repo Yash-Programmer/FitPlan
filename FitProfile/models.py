@@ -25,8 +25,9 @@ class Login(models.Model):
     nutritional_plan = models.TextField()
     workout_plan = models.TextField()
     progression_plan = models.TextField()
-
+    otp = models.TextField()
     introduction = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username
