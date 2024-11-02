@@ -5,7 +5,6 @@ import re
 from django.core.mail import send_mail
 import random
 
-# Create your views here.
 def login(request):
     return render(request, 'login.html')
 
@@ -39,7 +38,7 @@ def profile(request):
                                          'n': format_nutritional_plan(user.nutritional_plan),
                                          'w': format_nutritional_plan(user.workout_plan),
                                          "i": format_nutritional_plan(user.introduction),
-                                         "date": user.date})
+                                         "date": format_nutritional_plan(str(user.date)[:10])})
 
 def user(request):
     if request.method == 'GET':
@@ -86,7 +85,7 @@ def user(request):
         )
 
         nutritional = (
-            f"nutritional Plan for, also give scientific value like daily calories, nutritions in carbohyrates, fat, protein etc. {name}:\n"
+            f"nutritional Plan for 7 days in very informative and detailings, also give scientific value like daily calories, nutritions in carbohyrates, fat, protein etc. {name}:\n"
             f"Age: {age}\n"
             f"Email: {email}\n"
             f"Current Weight: {current_weight} kg\n"
@@ -106,7 +105,7 @@ def user(request):
         )
 
         progressions = (
-            f"progressions tracking assumption if you follow for 1 monthfor {name}:\n"
+            f"progressions tracking assumption if you follow for 3 months for {name}:\n"
             f"Age: {age}\n"
             f"Email: {email}\n"
             f"Current Weight: {current_weight} kg\n"
